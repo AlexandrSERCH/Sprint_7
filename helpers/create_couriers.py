@@ -1,5 +1,4 @@
 import requests
-from faker import Faker
 
 from helpers.generate_data import get_login, get_password, get_firstname
 from setting import BASE_URL
@@ -21,4 +20,3 @@ def register_new_courier_and_return_login_password():
     return None
 
 
-print(register_new_courier_and_return_login_password())

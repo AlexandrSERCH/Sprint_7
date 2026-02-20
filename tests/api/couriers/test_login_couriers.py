@@ -56,3 +56,31 @@ class TestLoginCouriers:
 
         assert response.status_code == 400
         assert body["message"] == "Недостаточно данных для входа"
+
+    @allure.title("Ошибка валидации при невалидном логине")
+    def test_login_courier_invalid_login_returns_404(self):
+
+        payload = {
+            "login": "inval1d_l0g1n",
+            "password": "123"
+        }
+
+        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        body = response.json()
+
+        assert response.status_code == 404
+        assert body["message"] == "Учетная запись не найдена"
+
+    @allure.title("Ошибка валидации при невалидном пароле")
+    def test_login_courier_invalid_login_returns_404(self):
+
+        payload = {
+            "login": "alex_29",
+            "password": "123zxc098"
+        }
+
+        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        body = response.json()
+
+        assert response.status_code == 404
+        assert body["message"] == "Учетная запись не найдена"

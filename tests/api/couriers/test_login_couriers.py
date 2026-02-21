@@ -2,7 +2,6 @@ import allure
 import pytest
 import requests
 
-from helpers.create_couriers import register_new_courier_and_return_login_password
 from setting import BASE_URL
 
 
@@ -13,13 +12,11 @@ class TestLoginCouriers:
     PATH = "/api/v1/courier/login"
 
     @allure.title("Успешая авторизация курьера")
-    def test_login_courier_returns_200_and_id(self):
-
-        login_and_password = register_new_courier_and_return_login_password()
+    def test_login_courier_returns_200_and_id(self, registered_courier):
 
         payload = {
-            "login": login_and_password[0],
-            "password": login_and_password[1]
+            "login": registered_courier["login"],
+            "password": registered_courier["password"]
         }
 
         response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)

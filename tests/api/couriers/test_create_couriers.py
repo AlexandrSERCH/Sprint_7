@@ -1,9 +1,6 @@
-from multiprocessing.reduction import duplicate
-
 import allure
 import requests
 
-from helpers.create_couriers import register_new_courier_and_return_login_password
 from helpers.generate_data import get_login, get_password, get_firstname
 from setting import BASE_URL
 
@@ -13,7 +10,6 @@ from setting import BASE_URL
 class TestCreateCouriers:
 
     PATH = '/api/v1/courier'
-
 
     @allure.title("Успешное создание курьера")
     def test_create_courier_return_201(self):
@@ -30,12 +26,11 @@ class TestCreateCouriers:
         assert response.text == '{"ok":true}'
 
     @allure.title("Запрет на создание дубпиката курьера")
-    def test_create_duplicate_couriers_returns_409(self):
-        duplicate_login_and_password = register_new_courier_and_return_login_password()
+    def test_create_duplicate_couriers_returns_409(self, registered_courier):
 
         payload = {
-            "login": duplicate_login_and_password[0],
-            "password": duplicate_login_and_password[1]
+            "login": registered_courier["login"],
+            "password": registered_courier["password"]
         }
 
         response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)

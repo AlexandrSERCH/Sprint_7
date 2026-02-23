@@ -1,19 +1,17 @@
 import allure
 import requests
 
-from setting import BASE_URL
+from constants import ACCEPT_ORDER_URL
 
 
 @allure.epic("Заказы")
 @allure.feature("Принять заказ")
 class TestAcceptOrder:
 
-    PATH = "/api/v1/orders/accept/"
-
     @allure.title("Успешное принятие заказа")
     def test_accept_order_returns_200(self, auth_courier, order_id):
 
-        response = requests.put(f"{BASE_URL}{self.PATH}{order_id}?courierId={auth_courier}")
+        response = requests.put(f"{ACCEPT_ORDER_URL}{order_id}?courierId={auth_courier}")
         body = response.json()
 
         assert response.status_code == 200
@@ -22,7 +20,7 @@ class TestAcceptOrder:
     @allure.title("Ошибка валидации при отсутствии id курьера")
     def test_accept_order_without_courier_id_returns_400(self, order_id):
 
-        response = requests.put(f"{BASE_URL}{self.PATH}{order_id}?courierId=")
+        response = requests.put(f"{ACCEPT_ORDER_URL}{order_id}?courierId=")
         body = response.json()
 
         assert response.status_code == 400
@@ -33,7 +31,7 @@ class TestAcceptOrder:
 
         invalid_courier_id = 123
 
-        response = requests.put(f"{BASE_URL}{self.PATH}{order_id}?courierId={invalid_courier_id}")
+        response = requests.put(f"{ACCEPT_ORDER_URL}{order_id}?courierId={invalid_courier_id}")
         body = response.json()
 
         assert response.status_code == 404
@@ -42,7 +40,7 @@ class TestAcceptOrder:
     @allure.title("Ошибка валидации при отсутствии id заказа")
     def test_accept_order_without_order_id_returns_400(self, auth_courier):
 
-        response = requests.put(f"{BASE_URL}{self.PATH}courierId={auth_courier}")
+        response = requests.put(f"{ACCEPT_ORDER_URL}courierId={auth_courier}")
         body = response.json()
 
         assert response.status_code == 400
@@ -53,7 +51,7 @@ class TestAcceptOrder:
 
         invalid_order_id = 123
 
-        response = requests.put(f"{BASE_URL}{self.PATH}{invalid_order_id}?courierId={auth_courier}")
+        response = requests.put(f"{ACCEPT_ORDER_URL}{invalid_order_id}?courierId={auth_courier}")
         body = response.json()
 
         assert response.status_code == 404

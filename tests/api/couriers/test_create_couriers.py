@@ -2,25 +2,17 @@ import allure
 import requests
 
 from helpers.generate_data import get_login, get_password, get_firstname
-from setting import BASE_URL
+from constants import COURIER_URL
 
 
 @allure.epic("Курьер")
 @allure.feature("Cоздание курьера")
 class TestCreateCouriers:
 
-    PATH = '/api/v1/courier'
-
     @allure.title("Успешное создание курьера")
-    def test_create_courier_return_201(self):
+    def test_create_courier_return_201(self, courier_data):
 
-        payload = {
-            "login": get_login(),
-            "password": get_password(),
-            "firstName": get_firstname()
-        }
-
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{COURIER_URL}", data=courier_data)
 
         assert response.status_code == 201
         assert response.text == '{"ok":true}'
@@ -33,7 +25,7 @@ class TestCreateCouriers:
             "password": registered_courier["password"]
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 409
@@ -43,42 +35,42 @@ class TestCreateCouriers:
         # а ОР из доки = Недостаточно данных для создания учетной записи
 
     @allure.title("Ошибка валидации при отсутствии обязательно поля 'login'")
-    def test_create_couriers_without_login_returns_400(self):
+    def test_create_couriers_without_login_returns_400(self, courier_data):
 
         payload = {
-            "password": get_password(),
+            "password": courier_data["password"],
             "firstName": get_firstname()
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 400
         assert body["message"] == "Недостаточно данных для создания учетной записи"
 
     @allure.title("Ошибка валидации при отсутствии обязательно поля 'password'")
-    def test_create_couriers_without_password_returns_400(self):
+    def test_create_couriers_without_password_returns_400(self, courier_data):
 
         payload = {
-            "login": get_login(),
+            "login": courier_data["login"],
             "firstName": get_firstname()
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 400
         assert body["message"] == "Недостаточно данных для создания учетной записи"
 
     @allure.title("Ошибка валидации при отсутствии обязательно поля 'firstname'")
-    def test_create_couriers_without_firstname_returns_400(self):
+    def test_create_couriers_without_firstname_returns_400(self, courier_data):
 
         payload = {
-            "login": get_login(),
+            "login": courier_data["login"],
             "password": get_password()
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 400

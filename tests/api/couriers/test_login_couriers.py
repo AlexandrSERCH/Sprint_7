@@ -2,14 +2,12 @@ import allure
 import pytest
 import requests
 
-from setting import BASE_URL
+from constants import LOGIN_COURIER_URL
 
 
 @allure.epic("Курьер")
 @allure.feature("Авторизация курьера")
 class TestLoginCouriers:
-
-    PATH = "/api/v1/courier/login"
 
     @allure.title("Успешая авторизация курьера")
     def test_login_courier_returns_200_and_id(self, registered_courier):
@@ -19,7 +17,7 @@ class TestLoginCouriers:
             "password": registered_courier["password"]
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{LOGIN_COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 200
@@ -32,7 +30,7 @@ class TestLoginCouriers:
             "password" : "123"
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{LOGIN_COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 400
@@ -46,7 +44,7 @@ class TestLoginCouriers:
         }
 
         try:
-            response = requests.post(f"{BASE_URL}{self.PATH}", data=payload, timeout=5)
+            response = requests.post(f"{LOGIN_COURIER_URL}", data=payload, timeout=5)
             body = response.json()
         except:
             pytest.fail("Превышено время ожидания: 5 секунд")
@@ -62,7 +60,7 @@ class TestLoginCouriers:
             "password": "123"
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{LOGIN_COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 404
@@ -76,7 +74,7 @@ class TestLoginCouriers:
             "password": "123zxc098"
         }
 
-        response = requests.post(f"{BASE_URL}{self.PATH}", data=payload)
+        response = requests.post(f"{LOGIN_COURIER_URL}", data=payload)
         body = response.json()
 
         assert response.status_code == 404
